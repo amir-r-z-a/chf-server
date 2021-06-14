@@ -9,6 +9,7 @@ public class Server {
         try {
             ServerSocket serverSocket = new ServerSocket(2020);
             DataBase.getSingleTone().addDataBase("RestaurantSignUp", new Table("D//Code//DataBase//"));
+            DataBase.getSingleTone().addDataBase("MenuEdition", new Table("D//Code//DataBase//"));
 
             while (true) {
                 Socket socket = serverSocket.accept();
