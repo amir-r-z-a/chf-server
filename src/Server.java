@@ -8,8 +8,7 @@ public class Server {
     public static void main(String[] args) {
         try {
             ServerSocket serverSocket = new ServerSocket(2020);
-            DataBase.getSingleTone().addDataBase("RestaurantSignUp", new Table("D//Code//DataBase//"));
-
+            DataBase.getSingleTone().addDataBase("RestaurantSignUp", new Table("D//Code//DataBase//Restaurant//RestaurantSignUp.txt"));
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("Connected");
@@ -40,7 +39,7 @@ class ClientHandler extends Thread {
             String[] strings = command.split("-");
             if (strings[0].equals("-Restaurant")) {
                 if (strings[1].equals("RestaurantSignUp")) {
-
+//                    dos.writeUTF();
                 }
             } else if (command.equals("-Client")) {
 

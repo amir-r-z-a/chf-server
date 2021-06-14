@@ -7,5 +7,7 @@ public class RestaurantAccount {
         this.data = data;
     }
 
-
+//    static String signUp(String ) {
+//
+//    }
 }
