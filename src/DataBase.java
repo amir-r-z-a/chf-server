@@ -37,7 +37,7 @@ class Table {
         }
     }
 
-    String raedFile() {
+    String readFile() {
         StringBuilder recovery = new StringBuilder("");
         int i;
         try {
@@ -51,7 +51,7 @@ class Table {
     }
 
     void writeFile(String str) {
-        StringBuilder stringBuilder = new StringBuilder(this.raedFile());
+        StringBuilder stringBuilder = new StringBuilder(this.readFile());
         try {
             fileWriter.write(String.valueOf(stringBuilder.append(str)));
         } catch (IOException e) {
@@ -59,8 +59,13 @@ class Table {
         }
     }
 
-//    String getRow(String id) {
-//        Scanner scanner = new Scanner(this.raedFile());
-//
-//    }
+    String getRow(String id) {
+        String[] split = this.readFile().split("\n");
+        for (String str : split) {
+            if (str.startsWith(id)) {
+                return str;
+            }
+        }
+        return "Could not found id: " + id;
+    }
 }
