@@ -3,6 +3,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Server {
     public static void main(String[] args) {
@@ -37,9 +39,12 @@ class ClientHandler extends Thread {
     public void run() {
         try {
             String command = dis.readUTF();
-            String[] strings = command.split("-");
-            if (strings[0].equals("-Restaurant")) {
-                if (strings[1].equals("RestaurantSignUp")) {
+            String[] split = command.split("-");
+            if (split[0].equals("-Restaurant")) {
+                if (split[1].equals("RestaurantSignUp")) {
+                    HashMap<String, String> data = new HashMap<>(
+                            Map.of("name", split[2], "lastName", split[3]));
+                    RestaurantAccount restaurantAccount = new RestaurantAccount(data);
 //                    dos.writeUTF();
                 }
             } else if (command.equals("-Client")) {
