@@ -23,9 +23,9 @@ public class DataBase {
 }
 
 class Table {
-    File file;
-    FileReader fileReader;
-    FileWriter fileWriter;
+    private final File file;
+    private FileReader fileReader;
+    private FileWriter fileWriter;
 
     public Table(String directory) {
         this.file = new File(directory);
