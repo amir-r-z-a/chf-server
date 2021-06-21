@@ -30,7 +30,9 @@ class Controller {
         file = new File(str);
         try {
             raf = new RandomAccessFile(file, "rw");
+            String last = readFile();
             fw = new FileWriter(file);
+            writeFile(last);
         } catch (IOException e) {
             e.printStackTrace();
         }

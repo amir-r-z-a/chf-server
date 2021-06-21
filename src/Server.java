@@ -59,7 +59,7 @@ class ClientHandler extends Thread {
         try {
             System.out.println("ready");
             String command = listener();
-            System.out.println(command);
+            System.out.println("command is: " + command);
             while (!command.equals("finish")) {
                 String[] split = command.split("-");
                 if (split[0].equals("Restaurant")) {
@@ -73,11 +73,17 @@ class ClientHandler extends Thread {
                         HashMap<String, String> data = new HashMap<>(
                                 Map.of("phoneNumber", split[2], "password", split[3]));
                         RestaurantAccount restaurantAccount = new RestaurantAccount(data);
-                        dos.writeUTF(restaurantAccount.signIn());
+                        System.out.println(restaurantAccount.getData());
+                        String s = restaurantAccount.signIn();
+                        System.out.println(s);
+                        dos.writeUTF(s);
                     }
                 } else if (command.equals("Client")) {
 
                 }
+
+                command = listener();
+                System.out.println(command);
             }
             System.out.println("done");
         } catch (IOException e) {
