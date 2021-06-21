@@ -63,20 +63,48 @@ class ClientHandler extends Thread {
             while (!command.equals("finish")) {
                 String[] split = command.split("-");
                 if (split[0].equals("Restaurant")) {
-                    if (split[1].equals("RestaurantSignUp")) {
-                        HashMap<String, String> data = new HashMap<>(
-                                Map.of("name", split[2], "phoneNumber", split[3], "password", split[4],
-                                        "openHour", split[5], "closeHour", split[6], "restaurantType", split[7]));
-                        RestaurantAccount restaurantAccount = new RestaurantAccount(data);
-                        dos.writeUTF(restaurantAccount.signUp());
-                    } else if (split[1].equals("RestaurantSignIn")) {
-                        HashMap<String, String> data = new HashMap<>(
-                                Map.of("phoneNumber", split[2], "password", split[3]));
-                        RestaurantAccount restaurantAccount = new RestaurantAccount(data);
-                        System.out.println(restaurantAccount.getData());
-                        String s = restaurantAccount.signIn();
-                        System.out.println(s);
-                        dos.writeUTF(s);
+                    switch (split[1]) {
+                        case "RestaurantSignUp": {
+                            HashMap<String, String> data = new HashMap<>(
+                                    Map.of("name", split[2], "phoneNumber", split[3], "password", split[4],
+                                            "openHour", split[5], "closeHour", split[6], "restaurantType", split[7],
+                                            "email", "null"));
+                            RestaurantAccount restaurantAccount = new RestaurantAccount(data);
+                            dos.writeUTF(restaurantAccount.signUp());
+                            break;
+                        }
+                        case "RestaurantSignIn": {
+                            HashMap<String, String> data = new HashMap<>(
+                                    Map.of("phoneNumber", split[2], "password", split[3]));
+                            RestaurantAccount restaurantAccount = new RestaurantAccount(data);
+                            dos.writeUTF(restaurantAccount.signIn());
+                            break;
+                        }
+                        case "EditProfile":
+                            HashMap<String, String> data;
+                            RestaurantAccount restaurantAccount;
+                            switch (split[2]) {
+                                case "name":
+                                    data = new HashMap<>(
+                                            Map.of("phoneNumber", split[3], "newName", split[4]));
+                                    restaurantAccount = new RestaurantAccount(data);
+                                    dos.writeUTF(restaurantAccount.editName());
+                                    break;
+                                case "password":
+                                    data = new HashMap<>(
+                                            Map.of("phoneNumber", split[3],
+                                                    "oldPassword", split[4], "newPassword", split[5]));
+                                    restaurantAccount = new RestaurantAccount(data);
+                                    dos.writeUTF(restaurantAccount.editPassword());
+                                    break;
+                                case "email":
+                                    data = new HashMap<>(
+                                            Map.of("phoneNumber", split[3], "newEmail", split[4]));
+                                    restaurantAccount = new RestaurantAccount(data);
+                                    dos.writeUTF(restaurantAccount.editEmail());
+                                    break;
+                            }
+                            break;
                     }
                 } else if (command.equals("Client")) {
 
