@@ -12,24 +12,32 @@ public class RestaurantAccount {
     }
 
     String alreadyPhoneNumber() {
-        String users = DataBase.getSingleTone().getController("RestaurantSignUp").readFile();
+        String users = DataBase.getSingleTone().getController("RestaurantAccounts").readFile();
         String[] split = users.split("\n");
         for (String str : split) {
             if (str.startsWith(data.get("phoneNumber"))) {
-                return "invalid";
+                return str;
             }
         }
-        DataBase.getSingleTone().getController("RestaurantSignUp").writeFile(data.get("phoneNumber")
+        return "invalid";
+    }
+
+    String signUp() {
+        if (!alreadyPhoneNumber().equals("invalid")) {
+            return "invalid";
+        }
+        DataBase.getSingleTone().getController("RestaurantAccounts").writeFile(data.get("phoneNumber")
                 + ": {" + data.get("name") + ", " + data.get("phoneNumber") + ", " + data.get("password") + ", "
                 + data.get("openHour") + ", " + data.get("closeHour") + ", " + data.get("restaurantType") + "}\n");
         return "valid";
     }
 
-    String foundPhoneNumber() {
-        return null;
-    }
-
-    String foundPassword() {
-        return null;
+    String signIn() {
+        String alreadyPhoneNumber = alreadyPhoneNumber();
+        if (alreadyPhoneNumber.equals("invalid")
+                || !alreadyPhoneNumber.split(", ")[2].equals(data.get("password"))) {
+            return "invalid";
+        }
+        return "valid";
     }
 }
