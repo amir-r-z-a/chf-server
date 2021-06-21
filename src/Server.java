@@ -15,12 +15,8 @@ public class Server {
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("Connected");
-                System.out.println("read: " + DataBase.getSingleTone().getController("RestaurantAccounts").readFile());
-                DataBase.getSingleTone().getController("RestaurantAccounts").writeFile("Aa");
-                System.out.println();
-                System.out.println("read2: " + DataBase.getSingleTone().getController("RestaurantAccounts").readFile());
-//                ClientHandler clientHandler = new ClientHandler(socket);
-//                clientHandler.start();
+                ClientHandler clientHandler = new ClientHandler(socket);
+                clientHandler.start();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -64,22 +60,24 @@ class ClientHandler extends Thread {
             System.out.println("ready");
             String command = listener();
             System.out.println(command);
-            String[] split = command.split("-");
-            if (split[0].equals("Restaurant")) {
-                if (split[1].equals("RestaurantSignUp")) {
-                    HashMap<String, String> data = new HashMap<>(
-                            Map.of("name", split[2], "phoneNumber", split[3], "password", split[4],
-                                    "openHour", split[5], "closeHour", split[6], "restaurantType", split[7]));
-                    RestaurantAccount restaurantAccount = new RestaurantAccount(data);
-                    dos.writeUTF(restaurantAccount.signUp());
-                } else if (split[1].equals("RestaurantSignIn")) {
-                    HashMap<String, String> data = new HashMap<>(
-                            Map.of("phoneNumber", split[2], "password", split[3]));
-                    RestaurantAccount restaurantAccount = new RestaurantAccount(data);
-                    dos.writeUTF(restaurantAccount.signIn());
-                }
-            } else if (command.equals("Client")) {
+            while (!command.equals("finish")) {
+                String[] split = command.split("-");
+                if (split[0].equals("Restaurant")) {
+                    if (split[1].equals("RestaurantSignUp")) {
+                        HashMap<String, String> data = new HashMap<>(
+                                Map.of("name", split[2], "phoneNumber", split[3], "password", split[4],
+                                        "openHour", split[5], "closeHour", split[6], "restaurantType", split[7]));
+                        RestaurantAccount restaurantAccount = new RestaurantAccount(data);
+                        dos.writeUTF(restaurantAccount.signUp());
+                    } else if (split[1].equals("RestaurantSignIn")) {
+                        HashMap<String, String> data = new HashMap<>(
+                                Map.of("phoneNumber", split[2], "password", split[3]));
+                        RestaurantAccount restaurantAccount = new RestaurantAccount(data);
+                        dos.writeUTF(restaurantAccount.signIn());
+                    }
+                } else if (command.equals("Client")) {
 
+                }
             }
             System.out.println("done");
         } catch (IOException e) {
