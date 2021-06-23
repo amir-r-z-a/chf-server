@@ -23,12 +23,9 @@ public class RestaurantAccount {
     }
 
     String signUp() {
-        if (!alreadyPhoneNumber().equals("invalid")) {
-            return "invalid";
-        }
         DataBase.getSingleTone().getController("RestaurantAccounts").writeFile(data.get("phoneNumber")
                 + ": {, " + data.get("name") + ", " + data.get("password") + ", "
-                + data.get("openHour") + ", " + data.get("closeHour") + ", " + data.get("restaurantType") + ", null, " + "}\n");
+                + data.get("open") + ", " + data.get("close") + ", " + data.get("restaurantType") + ", null, " + "}\n");
         return "valid";
     }
 
