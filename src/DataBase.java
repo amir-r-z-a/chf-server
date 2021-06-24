@@ -2,6 +2,7 @@ import java.io.*;
 import java.util.HashMap;
 
 public class DataBase {
+    static int counter = 0;
     private final HashMap<String, Controller> dataBase = new HashMap<>();
     static private DataBase singleTone;
 
@@ -71,7 +72,7 @@ class Controller {
                 return str;
             }
         }
-        return "Could not found id: " + id;
+        return "invalid";
     }
 
     void removeId(String id) {

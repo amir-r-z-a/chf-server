@@ -91,8 +91,9 @@ class RequestHandler extends Thread {
         System.out.println("command is: " + command);
         String[] split = command.split("-");
         if (split[0].equals("Restaurant")) {
-            HashMap<String, String> data;
+            HashMap<String, String> data = null;
             RestaurantAccount restaurantAccount;
+            RestaurantCategories restaurantCategories;
             StringBuilder finalWrite = new StringBuilder();
             switch (split[1]) {
                 case "RestaurantSignUp": {
@@ -106,6 +107,7 @@ class RequestHandler extends Thread {
                                 Map.of("name", split[2], "phoneNumber", split[3], "password", split[4],
                                         "open", split[5], "close", split[6], "restaurantType", split[7],
                                         "email", "null", "address", "null", "latLang", "null", "radius", "null"));
+                        data.put("rate", "null");
                         restaurantAccount = new RestaurantAccount(data);
                         writer(restaurantAccount.signUp());
                     }
@@ -217,6 +219,28 @@ class RequestHandler extends Thread {
                             writer(finalWrite.toString());
                             break;
                     }
+                case "RestaurantCategories":
+                    switch (split[2]) {
+                        case "add":
+                            data = new HashMap<>(
+                                    Map.of("phoneNumber", split[3], "category", split[4]));
+                            restaurantCategories = new RestaurantCategories(data);
+                            writer(restaurantCategories.addCategories());
+                            break;
+                        case "get":
+                            data = data = new HashMap<>(
+                                    Map.of("phoneNumber", split[3]));
+                            restaurantCategories = new RestaurantCategories(data);
+                            writer(restaurantCategories.getCategories());
+                            break;
+                        case "length":
+                            data = data = new HashMap<>(
+                                    Map.of("phoneNumber", split[3]));
+                            restaurantCategories = new RestaurantCategories(data);
+                            writer(restaurantCategories.getLength());
+                            break;
+                    }
+                    break;
             }
         } else if (command.equals("Client")) {
 

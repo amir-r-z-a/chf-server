@@ -26,7 +26,8 @@ public class RestaurantAccount {
         DataBase.getSingleTone().getController("RestaurantAccounts").writeFile(data.get("phoneNumber")
                 + ": {, " + data.get("name") + ", " + data.get("password") + ", "
                 + data.get("open") + ", " + data.get("close") + ", " + data.get("restaurantType")
-                + ", null, null, null, null, " + "}\n");
+                + ", null, null, null, null, null, " + DataBase.counter + ", }\n");
+        DataBase.getSingleTone().getController("RestaurantCategories").writeFile(data.get("phoneNumber") + ": {, All" + ", }\n");
         return "valid";
     }
 
