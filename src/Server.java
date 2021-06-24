@@ -11,7 +11,7 @@ public class Server {
         try {
             ServerSocket serverSocket = new ServerSocket(2442);
             DataBase.getSingleTone().addDataBase("RestaurantAccounts", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantAccounts.txt"));
-            DataBase.getSingleTone().addDataBase("RestaurantCategory", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantCategory.txt"));
+            DataBase.getSingleTone().addDataBase("RestaurantCategories", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantCategories.txt"));
             DataBase.getSingleTone().addDataBase("RestaurantMenuEdition", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantMenuEdition.txt"));
             while (true) {
                 Socket socket = serverSocket.accept();
