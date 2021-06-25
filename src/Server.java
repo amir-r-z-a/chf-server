@@ -12,7 +12,8 @@ public class Server {
             ServerSocket serverSocket = new ServerSocket(2442);
             DataBase.getSingleTone().addDataBase("RestaurantAccounts", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantAccounts.txt"));
             DataBase.getSingleTone().addDataBase("RestaurantCategories", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantCategories.txt"));
-            DataBase.getSingleTone().addDataBase("RestaurantMenuEdition", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantMenuEdition.txt"));
+            DataBase.getSingleTone().addDataBase("RestaurantFoodNames", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantFoodNames.txt"));
+            DataBase.getSingleTone().addDataBase("RestaurantFoodDetails", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantFoodDetails.txt"));
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("Connected");
@@ -86,15 +87,16 @@ class RequestHandler extends Thread {
 //        IOExeption-->Exeption
 //        editName,.... --> edit
 //        getName,....--> get
+//        alreadyPhoneNumber--> getRow
         System.out.println("ready");
         String command = listener();
         System.out.println("command is: " + command);
         String[] split = command.split("-");
         if (split[0].equals("Restaurant")) {
-            HashMap<String, String> data = null;
+            HashMap<String, String> data;
             RestaurantAccount restaurantAccount;
-            RestaurantCategories restaurantCategories;
-            StringBuilder finalWrite = new StringBuilder();
+            RestaurantMenuEdition restaurantMenuEdition;
+            StringBuilder finalWrite/* = new StringBuilder()*/;
             switch (split[1]) {
                 case "RestaurantSignUp": {
                     if (split[2].equals("alreadyPhoneNumber")) {
@@ -122,6 +124,12 @@ class RequestHandler extends Thread {
                 }
                 case "RestaurantGetData":
                     switch (split[2]) {
+                        case "account":
+                            data = new HashMap<>(
+                                    Map.of("phoneNumber", split[3]));
+                            restaurantAccount = new RestaurantAccount(data);
+                            writer(restaurantAccount.getAccount());
+                            break;
                         case "name":
                             data = new HashMap<>(
                                     Map.of("phoneNumber", split[3]));
@@ -145,6 +153,18 @@ class RequestHandler extends Thread {
                                     Map.of("phoneNumber", split[3]));
                             restaurantAccount = new RestaurantAccount(data);
                             writer(restaurantAccount.getRadius());
+                            break;
+                        case "categories":
+                            data = new HashMap<>(
+                                    Map.of("phoneNumber", split[3]));
+                            restaurantMenuEdition = new RestaurantMenuEdition(data);
+                            writer(restaurantMenuEdition.getCategories());
+                            break;
+                        case "menu":
+                            data = new HashMap<>(
+                                    Map.of("phoneNumber", split[3]));
+                            restaurantMenuEdition = new RestaurantMenuEdition(data);
+                            writer(restaurantMenuEdition.getMenu());
                             break;
                     }
                     break;
@@ -219,26 +239,49 @@ class RequestHandler extends Thread {
                             writer(finalWrite.toString());
                             break;
                     }
-                case "RestaurantCategories":
+                case "RestaurantMenuEdition":
                     switch (split[2]) {
-                        case "add":
+                        case "addCategory":
                             data = new HashMap<>(
                                     Map.of("phoneNumber", split[3], "category", split[4]));
-                            restaurantCategories = new RestaurantCategories(data);
-                            writer(restaurantCategories.addCategories());
+                            restaurantMenuEdition = new RestaurantMenuEdition(data);
+                            writer(restaurantMenuEdition.addCategory());
                             break;
-                        case "get":
-                            data = data = new HashMap<>(
-                                    Map.of("phoneNumber", split[3]));
-                            restaurantCategories = new RestaurantCategories(data);
-                            writer(restaurantCategories.getCategories());
+                        case "addFood":
+                            data = new HashMap<>(
+                                    Map.of("phoneNumber", split[3], "category", split[4], "foodName", split[5]
+                                            , "foodDesc", split[6], "foodPrice", split[7], "foodStatus", split[8]
+                                            , "numOfOrder", split[9]));
+                            restaurantMenuEdition = new RestaurantMenuEdition(data);
+                            writer(restaurantMenuEdition.addFood());
                             break;
-                        case "length":
-                            data = data = new HashMap<>(
-                                    Map.of("phoneNumber", split[3]));
-                            restaurantCategories = new RestaurantCategories(data);
-                            writer(restaurantCategories.getLength());
+                        case "deleteFood":
+                            data = new HashMap<>(
+                                    Map.of("phoneNumber", split[3], "category", split[4], "foodName", split[5]));
+                            restaurantMenuEdition = new RestaurantMenuEdition(data);
+                            writer(restaurantMenuEdition.deleteFood());
                             break;
+                        case "editStatus":
+                            data = new HashMap<>(
+                                    Map.of("phoneNumber", split[3], "category", split[4]
+                                            , "foodName", split[5], "newFoodStatus", split[6]));
+                            restaurantMenuEdition = new RestaurantMenuEdition(data);
+                            writer(restaurantMenuEdition.editStatus());
+                            break;
+                        case "editOther":
+                            data = new HashMap<>(
+                                    Map.of("phoneNumber", split[3], "category", split[4]
+                                            , "foodName", split[5], "newFoodName", split[6]
+                                            , "newFoodDesc", split[7], "newFoodPrice", split[8]));
+                            restaurantMenuEdition = new RestaurantMenuEdition(data);
+                            writer(restaurantMenuEdition.editOther());
+                            break;
+//                        case "length":
+//                            data = new HashMap<>(
+//                                    Map.of("phoneNumber", split[3]));
+//                            restaurantCategories = new RestaurantCategories(data);
+//                            writer(restaurantCategories.getLength());
+//                            break;
                     }
                     break;
             }

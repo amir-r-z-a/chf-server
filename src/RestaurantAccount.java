@@ -27,7 +27,9 @@ public class RestaurantAccount {
                 + ": {, " + data.get("name") + ", " + data.get("password") + ", "
                 + data.get("open") + ", " + data.get("close") + ", " + data.get("restaurantType")
                 + ", null, null, null, null, null, " + DataBase.counter + ", }\n");
-        DataBase.getSingleTone().getController("RestaurantCategories").writeFile(data.get("phoneNumber") + ": {, All" + ", }\n");
+        DataBase.getSingleTone().getController("RestaurantCategories").writeFile(data.get("phoneNumber") + ": {, All, }\n");
+        DataBase.getSingleTone().getController("RestaurantFoodNames").writeFile(data.get("phoneNumber") + ":All: {, }\n");
+        DataBase.counter++;
         return "valid";
     }
 
@@ -59,6 +61,10 @@ public class RestaurantAccount {
 
     String getRadius() {
         return alreadyPhoneNumber().equals("invalid") ? "invalid" : alreadyPhoneNumber().split(", ")[9];
+    }
+
+    String getAccount() {
+        return DataBase.getSingleTone().getController("RestaurantAccounts").getRow(data.get("phoneNumber"));
     }
 
     String editName() {
