@@ -29,6 +29,7 @@ public class RestaurantAccount {
                 + ", null, null, null, null, null, " + DataBase.counter + ", }\n");
         DataBase.getSingleTone().getController("RestaurantCategories").writeFile(data.get("phoneNumber") + ": {, All, }\n");
         DataBase.getSingleTone().getController("RestaurantFoodNames").writeFile(data.get("phoneNumber") + ":All: {, }\n");
+        DataBase.getSingleTone().getController("RestaurantTopTenFoods").writeFile(data.get("phoneNumber") + ": {, }\n");
         DataBase.counter++;
         return "valid";
     }

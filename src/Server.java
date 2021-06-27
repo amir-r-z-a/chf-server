@@ -14,6 +14,19 @@ public class Server {
             DataBase.getSingleTone().addDataBase("RestaurantCategories", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantCategories.txt"));
             DataBase.getSingleTone().addDataBase("RestaurantFoodNames", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantFoodNames.txt"));
             DataBase.getSingleTone().addDataBase("RestaurantFoodDetails", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantFoodDetails.txt"));
+            DataBase.getSingleTone().addDataBase("RestaurantTopTenFoods", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantTopTenFoods.txt"));
+            DataBase.getSingleTone().addDataBase("RestaurantActiveOrdersData", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantActiveOrdersData.txt"));
+            DataBase.getSingleTone().addDataBase("RestaurantActiveOrdersFoodNames", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantActiveOrdersFoodNames.txt"));
+            DataBase.getSingleTone().addDataBase("RestaurantActiveOrdersNumbers", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantActiveOrdersNumbers.txt"));
+            DataBase.getSingleTone().addDataBase("RestaurantOrdersHistoryData", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantOrdersHistoryData.txt"));
+            DataBase.getSingleTone().addDataBase("RestaurantOrdersHistoryFoodNames", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantOrdersHistoryFoodNames.txt"));
+            DataBase.getSingleTone().addDataBase("RestaurantOrdersHistoryNumbers", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantOrdersHistoryNumbers.txt"));
+            DataBase.getSingleTone().addDataBase("ClientActiveOrdersData", new Controller("D:\\Code\\DataBase\\Restaurant\\ClientActiveOrdersData.txt"));
+            DataBase.getSingleTone().addDataBase("ClientActiveOrdersFoodNames", new Controller("D:\\Code\\DataBase\\Restaurant\\ClientActiveOrdersFoodNames.txt"));
+            DataBase.getSingleTone().addDataBase("ClientActiveOrdersNumbers", new Controller("D:\\Code\\DataBase\\Restaurant\\ClientActiveOrdersNumbers.txt"));
+            DataBase.getSingleTone().addDataBase("ClientOrdersHistoryData", new Controller("D:\\Code\\DataBase\\Restaurant\\ClientOrdersHistoryData.txt"));
+            DataBase.getSingleTone().addDataBase("ClientOrdersHistoryFoodNames", new Controller("D:\\Code\\DataBase\\Restaurant\\ClientOrdersHistoryFoodNames.txt"));
+            DataBase.getSingleTone().addDataBase("ClientOrdersHistoryNumbers", new Controller("D:\\Code\\DataBase\\Restaurant\\ClientOrdersHistoryNumbers.txt"));
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("Connected");
@@ -88,6 +101,10 @@ class RequestHandler extends Thread {
 //        editName,.... --> edit
 //        getName,....--> get
 //        alreadyPhoneNumber--> getRow
+//        case RestaurantGetData: --> factor data and RestaurantMenuEdition
+//        strBuilder.append() in edits--> ans.append()
+//        DataBase.getSingleTone().getController("").writeFile(ans.toString(), true)   (true: new FileWriter())   ;--> DataBase.getSingleTone().getController("").writeFile(data[i]);
+//        writeFile("",true)--> delete
         System.out.println("ready");
         String command = listener();
         System.out.println("command is: " + command);
@@ -96,7 +113,9 @@ class RequestHandler extends Thread {
             HashMap<String, String> data;
             RestaurantAccount restaurantAccount;
             RestaurantMenuEdition restaurantMenuEdition;
-            StringBuilder finalWrite/* = new StringBuilder()*/;
+            RestaurantOrders restaurantOrders;
+            RestaurantTopTenFoods restaurantTopTenFoods;
+            StringBuilder finalWrite = new StringBuilder();
             switch (split[1]) {
                 case "RestaurantSignUp": {
                     if (split[2].equals("alreadyPhoneNumber")) {
@@ -108,7 +127,8 @@ class RequestHandler extends Thread {
                         data = new HashMap<>(
                                 Map.of("name", split[2], "phoneNumber", split[3], "password", split[4],
                                         "open", split[5], "close", split[6], "restaurantType", split[7],
-                                        "email", "null", "address", "null", "latLang", "null", "radius", "null"));
+                                        "email", "null", "address", "null"
+                                        , "latLang", "null", "radius", "null"));
                         data.put("rate", "null");
                         restaurantAccount = new RestaurantAccount(data);
                         writer(restaurantAccount.signUp());
@@ -171,7 +191,6 @@ class RequestHandler extends Thread {
                 case "RestaurantEditProfile":
                     switch (split[2]) {
                         case "feature":
-                            finalWrite = new StringBuilder();
                             for (int i = 3; i < split.length; i += 3) {
                                 if (i != 3) {
                                     finalWrite.append("-");
@@ -207,7 +226,6 @@ class RequestHandler extends Thread {
                             writer(restaurantAccount.editPassword());
                             break;
                         case "location":
-                            finalWrite = new StringBuilder();
                             for (int i = 3; i < split.length; i += 3) {
                                 if (i != 3) {
                                     finalWrite.append("-");
@@ -284,9 +302,92 @@ class RequestHandler extends Thread {
 //                            break;
                     }
                     break;
+                case "RestaurantOrders":
+                    for (int i = 2; i < split.length; i += 2) {
+                        if (i != 2) {
+                            finalWrite.append("...");
+                        }
+                        switch (split[i]) {
+                            case "RestaurantActiveOrdersData":
+                                data = new HashMap<>(
+                                        Map.of("phoneNumber", split[i + 1]));
+                                restaurantOrders = new RestaurantOrders(data);
+                                finalWrite.append(restaurantOrders.RestaurantActiveOrdersData());
+                                break;
+                            case "RestaurantActiveOrdersFoodNames":
+                                data = new HashMap<>(
+                                        Map.of("phoneNumber", split[i + 1]));
+                                restaurantOrders = new RestaurantOrders(data);
+                                finalWrite.append(restaurantOrders.RestaurantActiveOrdersFoodNames());
+                                break;
+                            case "RestaurantActiveOrdersNumbers":
+                                data = new HashMap<>(
+                                        Map.of("phoneNumber", split[i + 1]));
+                                restaurantOrders = new RestaurantOrders(data);
+                                finalWrite.append(restaurantOrders.RestaurantActiveOrdersNumbers());
+                                break;
+                            case "RestaurantFinishedOrders":
+                                String orderID = split[i + 2] + "-" + split[i + 3];
+                                data = new HashMap<>(
+                                        Map.of("phoneNumber", split[i + 1]
+                                                , "orderID", orderID));
+                                restaurantOrders = new RestaurantOrders(data);
+                                finalWrite.append(restaurantOrders.RestaurantFinishedOrders());
+                                break;
+                            case "RestaurantOrdersHistoryData":
+                                data = new HashMap<>(
+                                        Map.of("phoneNumber", split[i + 1]));
+                                restaurantOrders = new RestaurantOrders(data);
+                                finalWrite.append(restaurantOrders.RestaurantOrdersHistoryData());
+                                break;
+                            case "RestaurantOrdersHistoryFoodNames":
+                                data = new HashMap<>(
+                                        Map.of("phoneNumber", split[i + 1]));
+                                restaurantOrders = new RestaurantOrders(data);
+                                finalWrite.append(restaurantOrders.RestaurantOrdersHistoryFoodNames());
+                                break;
+                            case "RestaurantOrdersHistoryNumbers":
+                                data = new HashMap<>(
+                                        Map.of("phoneNumber", split[i + 1]));
+                                restaurantOrders = new RestaurantOrders(data);
+                                finalWrite.append(restaurantOrders.RestaurantOrdersHistoryNumbers());
+                                break;
+                        }
+                    }
+                    writer(finalWrite.toString());
+                    break;
+                case "RestaurantTopTenFoods":
+                    data = new HashMap<>(
+                            Map.of("phoneNumber", split[2], "topTenFoods", split[3]));
+                    restaurantTopTenFoods = new RestaurantTopTenFoods(data);
+                    writer(restaurantTopTenFoods.refreshTopTenFoods());
+                    break;
             }
-        } else if (command.equals("Client")) {
-
+        } else if (split[0].equals("Client")) {
+            HashMap<String, String> data;
+            ClientOrders clientOrders;
+            StringBuilder finalWrite = new StringBuilder();
+            switch (split[1]) {
+                case "ClientOrders":
+                    for (int i = 2; i < split.length; i += 2) {
+                        switch (split[i]) {
+                            case "AddOrder":
+                                data = new HashMap<>(
+                                        Map.of("phoneNumber", split[i + 1], "name", split[i + 2]
+                                                , "clientPhoneNumber", split[i + 3], "address", split[i + 4]
+                                                , "latLng", split[i + 5], "orderDate", split[i + 6]
+                                                , "isOnlinePayment", split[i + 7], "foodNames", split[i + 8]
+                                                , "numbers", split[i + 9], "restaurantName", split[i + 10]));
+                                data.put("sumPrice", split[i + 11]);
+                                data.put("sumNumberOfFoods", split[i + 12]);
+                                clientOrders = new ClientOrders(data);
+                                writer(clientOrders.AddOrder());
+                                break;
+                        }
+                    }
+            }
+        } else if (split[0].equals("Other")) {
+            System.out.println("other");
         }
         try {
             dis.close();
