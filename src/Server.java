@@ -31,6 +31,7 @@ public class Server {
             DataBase.getSingleTone().addDataBase("ClientFavRestaurants", new Controller("D:\\Code\\DataBase\\Client\\ClientFavRestaurants.txt"));
             DataBase.getSingleTone().addDataBase("ClientCommentsQuestion", new Controller("D:\\Code\\DataBase\\Client\\ClientCommentsQuestion.txt"));
             DataBase.getSingleTone().addDataBase("ClientCommentsAnswer", new Controller("D:\\Code\\DataBase\\Client\\ClientCommentsAnswer.txt"));
+            DataBase.getSingleTone().addDataBase("ClientAddresses", new Controller("D:\\Code\\DataBase\\Client\\ClientAddresses.txt"));
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("Connected");
@@ -156,7 +157,8 @@ class RequestHandler extends Thread {
                             break;
                         case "accounts":
                             restaurantAccount = new RestaurantAccount(null);
-                            writer(restaurantAccount.getAccounts());
+                            restaurantMenuEdition = new RestaurantMenuEdition(null);
+                            writer(restaurantAccount.getAccounts() + "***" + restaurantMenuEdition.getAllCategories() + "***" + restaurantMenuEdition.getAllMenu());
                             break;
                         case "name":
                             data = new HashMap<>(
@@ -375,6 +377,7 @@ class RequestHandler extends Thread {
             HashMap<String, String> data;
             ClientOrders clientOrders;
             ClientAccount clientAccount;
+            ClientFavRestaurants clientFavRestaurants;
             StringBuilder finalWrite = new StringBuilder();
             switch (split[1]) {
                 case "ClientSignUp":
@@ -418,6 +421,23 @@ class RequestHandler extends Thread {
                             writer(clientAccount.getClientCommentsQuestion() + "-" + clientAccount.getClientCommentsAnswer());
                             break;
                     }
+                    break;
+                case "ClientAddresses":
+                    switch (split[2]) {
+                        case "addAddress":
+                            data = new HashMap<>(
+                                    Map.of("phoneNumber", split[3], "newAddress", split[4]));
+                            clientAccount = new ClientAccount(data);
+                            writer(clientAccount.addAddress());
+                            break;
+                        case "deleteAddress":
+                            data = new HashMap<>(
+                                    Map.of("phoneNumber", split[3], "address", split[4]));
+                            clientAccount = new ClientAccount(data);
+                            writer(clientAccount.deleteAddress());
+                            break;
+                    }
+                    break;
                 case "ClientOrders":
                     for (int i = 2; i < split.length; i += 2) {
                         switch (split[i]) {
@@ -435,6 +455,13 @@ class RequestHandler extends Thread {
                                 break;
                         }
                     }
+                    break;
+                case "ClientFavRestaurants":
+                    data = new HashMap<>(
+                            Map.of("phoneNumber", split[3], "favRestaurants", split[4]));
+                    clientFavRestaurants = new ClientFavRestaurants(data);
+                    writer(clientFavRestaurants.refreshFavRestaurants());
+                    break;
             }
         } else if (split[0].equals("Other")) {
             System.out.println("other");

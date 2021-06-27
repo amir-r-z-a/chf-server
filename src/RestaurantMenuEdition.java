@@ -76,7 +76,27 @@ public class RestaurantMenuEdition {
         return categories.substring(categories.indexOf(", ") + 1, categories.lastIndexOf(", "));
     }
 
+    String getAllCategories() {
+        String[] categories = DataBase.getSingleTone().getController("RestaurantCategories").readFile().split("\n");
+        StringBuilder ans = new StringBuilder();
+        for (String str : categories) {
+            ans.append(str).append("\n");
+        }
+        return ans.toString();
+    }
+
     String getMenu() {
+        String[] menu = DataBase.getSingleTone().getController("RestaurantFoodDetails").readFile().split("\n");
+        StringBuilder ans = new StringBuilder();
+        for (String str : menu) {
+            if (str.startsWith(data.get("phoneNumber"))) {
+                ans.append(str).append("\n");
+            }
+        }
+        return ans.toString();
+    }
+
+    String getAllMenu() {
         return DataBase.getSingleTone().getController("RestaurantFoodDetails").readFile();
     }
 

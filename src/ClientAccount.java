@@ -24,7 +24,7 @@ public class ClientAccount {
 
     String signUp() {
         DataBase.getSingleTone().getController("ClientAccounts").writeFile(data.get("phoneNumber")
-                + ": {, " + data.get("name") + ", " + data.get("password") + ", null, null, ,null, null, null, }\n");
+                + ": {, " + data.get("name") + ", " + data.get("password") + ", null, null, null, null, null, }\n");
         DataBase.getSingleTone().getController("ClientFavRestaurants").writeFile(data.get("phoneNumber") + ": {, }\n");
         DataBase.getSingleTone().getController("ClientCommentsQuestion").writeFile(data.get("phoneNumber") + ": {, }\n");
         DataBase.getSingleTone().getController("ClientCommentsAnswer").writeFile(data.get("phoneNumber") + ": {, }\n");
@@ -60,5 +60,22 @@ public class ClientAccount {
 
     String getClientCommentsAnswer() {
         return DataBase.getSingleTone().getController("ClientCommentsAnswer").getRow(data.get("phoneNumber"));
+    }
+
+    String addAddress() {
+        DataBase.getSingleTone().getController("ClientAddresses").writeFile(data.get("phoneNumber") + ":" + data.get("newAddress"));
+        return "valid";
+    }
+
+    String deleteAddress() {
+        String[] addresses = DataBase.getSingleTone().getController("ClientAddresses").readFile().split("\n");
+        StringBuilder ans = new StringBuilder();
+        for (String str : addresses) {
+            if (!str.startsWith(data.get("phoneNumber")) || !str.substring(str.indexOf(":") + 1).equals(data.get("address"))) {
+                ans.append(str).append("\n");
+            }
+        }
+        DataBase.getSingleTone().getController("ClientAddresses").writeFile(ans.toString(), true);
+        return "valid";
     }
 }

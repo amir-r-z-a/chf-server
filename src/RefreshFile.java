@@ -29,6 +29,7 @@ public class RefreshFile {
         File file18 = new File("D:\\Code\\DataBase\\Client\\ClientFavRestaurants.txt");
         File file19 = new File("D:\\Code\\DataBase\\Client\\ClientCommentsQuestion.txt");
         File file20 = new File("D:\\Code\\DataBase\\Client\\ClientCommentsAnswer.txt");
+        File file21 = new File("D:\\Code\\DataBase\\Client\\ClientAddresses.txt");
         try {
             FileWriter fileWriter = new FileWriter(file);
             FileWriter fileWriter1 = new FileWriter(file1);
@@ -53,6 +54,7 @@ public class RefreshFile {
             FileWriter fileWriter18 = new FileWriter(file18);
             FileWriter fileWriter19 = new FileWriter(file19);
             FileWriter fileWriter20 = new FileWriter(file20);
+            FileWriter fileWriter21 = new FileWriter(file21);
         } catch (IOException e) {
             e.printStackTrace();
         }
