@@ -2,7 +2,8 @@ import java.io.*;
 import java.util.HashMap;
 
 public class DataBase {
-    static int counter = 0;
+    static int restaurantCounter = 0;
+    static int clientCounter = 0;
     private final HashMap<String, Controller> dataBase = new HashMap<>();
     static private DataBase singleTone;
 

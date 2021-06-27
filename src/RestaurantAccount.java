@@ -26,11 +26,11 @@ public class RestaurantAccount {
         DataBase.getSingleTone().getController("RestaurantAccounts").writeFile(data.get("phoneNumber")
                 + ": {, " + data.get("name") + ", " + data.get("password") + ", "
                 + data.get("open") + ", " + data.get("close") + ", " + data.get("restaurantType")
-                + ", null, null, null, null, null, " + DataBase.counter + ", }\n");
+                + ", null, null, null, null, 0, " + DataBase.restaurantCounter + ", }\n");
         DataBase.getSingleTone().getController("RestaurantCategories").writeFile(data.get("phoneNumber") + ": {, All, }\n");
         DataBase.getSingleTone().getController("RestaurantFoodNames").writeFile(data.get("phoneNumber") + ":All: {, }\n");
         DataBase.getSingleTone().getController("RestaurantTopTenFoods").writeFile(data.get("phoneNumber") + ": {, }\n");
-        DataBase.counter++;
+        DataBase.restaurantCounter++;
         return "valid";
     }
 
@@ -66,6 +66,10 @@ public class RestaurantAccount {
 
     String getAccount() {
         return DataBase.getSingleTone().getController("RestaurantAccounts").getRow(data.get("phoneNumber"));
+    }
+
+    String getAccounts() {
+        return DataBase.getSingleTone().getController("RestaurantAccounts").readFile();
     }
 
     String editName() {
