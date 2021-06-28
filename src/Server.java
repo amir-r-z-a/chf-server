@@ -21,6 +21,7 @@ public class Server {
             DataBase.getSingleTone().addDataBase("RestaurantOrdersHistoryData", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantOrdersHistoryData.txt"));
             DataBase.getSingleTone().addDataBase("RestaurantOrdersHistoryFoodNames", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantOrdersHistoryFoodNames.txt"));
             DataBase.getSingleTone().addDataBase("RestaurantOrdersHistoryNumbers", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantOrdersHistoryNumbers.txt"));
+            DataBase.getSingleTone().addDataBase("RestaurantComments", new Controller("D:\\Code\\DataBase\\Restaurant\\RestaurantComments.txt"));
             DataBase.getSingleTone().addDataBase("ClientActiveOrdersData", new Controller("D:\\Code\\DataBase\\Client\\ClientActiveOrdersData.txt"));
             DataBase.getSingleTone().addDataBase("ClientActiveOrdersFoodNames", new Controller("D:\\Code\\DataBase\\Client\\ClientActiveOrdersFoodNames.txt"));
             DataBase.getSingleTone().addDataBase("ClientActiveOrdersNumbers", new Controller("D:\\Code\\DataBase\\Client\\ClientActiveOrdersNumbers.txt"));
@@ -29,8 +30,7 @@ public class Server {
             DataBase.getSingleTone().addDataBase("ClientOrdersHistoryNumbers", new Controller("D:\\Code\\DataBase\\Client\\ClientOrdersHistoryNumbers.txt"));
             DataBase.getSingleTone().addDataBase("ClientAccounts", new Controller("D:\\Code\\DataBase\\Client\\ClientAccounts.txt"));
             DataBase.getSingleTone().addDataBase("ClientFavRestaurants", new Controller("D:\\Code\\DataBase\\Client\\ClientFavRestaurants.txt"));
-            DataBase.getSingleTone().addDataBase("ClientCommentsQuestion", new Controller("D:\\Code\\DataBase\\Client\\ClientCommentsQuestion.txt"));
-            DataBase.getSingleTone().addDataBase("ClientCommentsAnswer", new Controller("D:\\Code\\DataBase\\Client\\ClientCommentsAnswer.txt"));
+            DataBase.getSingleTone().addDataBase("ClientComments", new Controller("D:\\Code\\DataBase\\Client\\ClientComments.txt"));
             DataBase.getSingleTone().addDataBase("ClientAddresses", new Controller("D:\\Code\\DataBase\\Client\\ClientAddresses.txt"));
             while (true) {
                 Socket socket = serverSocket.accept();
@@ -378,6 +378,7 @@ class RequestHandler extends Thread {
             ClientOrders clientOrders;
             ClientAccount clientAccount;
             ClientFavRestaurants clientFavRestaurants;
+            Comments comments;
             StringBuilder finalWrite = new StringBuilder();
             switch (split[1]) {
                 case "ClientSignUp":
@@ -389,7 +390,6 @@ class RequestHandler extends Thread {
                     } else {
                         data = new HashMap<>(
                                 Map.of("name", split[2], "phoneNumber", split[3], "password", split[4]));
-                        data.put("rate", "null");
                         clientAccount = new ClientAccount(data);
                         writer(clientAccount.signUp());
                     }
@@ -418,7 +418,7 @@ class RequestHandler extends Thread {
                             data = new HashMap<>(
                                     Map.of("phoneNumber", split[3]));
                             clientAccount = new ClientAccount(data);
-                            writer(clientAccount.getClientCommentsQuestion() + "-" + clientAccount.getClientCommentsAnswer());
+                            writer(clientAccount.getComments());
                             break;
                     }
                     break;
@@ -440,6 +440,9 @@ class RequestHandler extends Thread {
                     break;
                 case "ClientOrders":
                     for (int i = 2; i < split.length; i += 2) {
+                        if (i != 2) {
+                            finalWrite.append("...");
+                        }
                         switch (split[i]) {
                             case "AddOrder":
                                 data = new HashMap<>(
@@ -453,14 +456,117 @@ class RequestHandler extends Thread {
                                 clientOrders = new ClientOrders(data);
                                 writer(clientOrders.AddOrder());
                                 break;
+                            case "ClientActiveOrdersData":
+                                data = new HashMap<>(
+                                        Map.of("phoneNumber", split[i + 1]));
+                                clientOrders = new ClientOrders(data);
+                                finalWrite.append(clientOrders.ClientActiveOrdersData());
+                                break;
+                            case "ClientActiveOrdersFoodNames":
+                                data = new HashMap<>(
+                                        Map.of("phoneNumber", split[i + 1]));
+                                clientOrders = new ClientOrders(data);
+                                finalWrite.append(clientOrders.ClientActiveOrdersFoodNames());
+                                break;
+                            case "ClientActiveOrdersNumbers":
+                                data = new HashMap<>(
+                                        Map.of("phoneNumber", split[i + 1]));
+                                clientOrders = new ClientOrders(data);
+                                finalWrite.append(clientOrders.ClientActiveOrdersNumbers());
+                                break;
+                            case "ClientOrdersHistoryData":
+                                data = new HashMap<>(
+                                        Map.of("phoneNumber", split[i + 1]));
+                                clientOrders = new ClientOrders(data);
+                                finalWrite.append(clientOrders.ClientOrdersHistoryData());
+                                break;
+                            case "ClientOrdersHistoryFoodNames":
+                                data = new HashMap<>(
+                                        Map.of("phoneNumber", split[i + 1]));
+                                clientOrders = new ClientOrders(data);
+                                finalWrite.append(clientOrders.ClientOrdersHistoryFoodNames());
+                                break;
+                            case "ClientOrdersHistoryNumbers":
+                                data = new HashMap<>(
+                                        Map.of("phoneNumber", split[i + 1]));
+                                clientOrders = new ClientOrders(data);
+                                finalWrite.append(clientOrders.ClientOrdersHistoryNumbers());
+                                break;
                         }
                     }
+                    writer(finalWrite.toString());
                     break;
                 case "ClientFavRestaurants":
                     data = new HashMap<>(
-                            Map.of("phoneNumber", split[3], "favRestaurants", split[4]));
+                            Map.of("phoneNumber", split[2], "favRestaurants", split[3]));
                     clientFavRestaurants = new ClientFavRestaurants(data);
                     writer(clientFavRestaurants.refreshFavRestaurants());
+                    break;
+                case "ClientEditProfile":
+                    switch (split[2]) {
+                        case "feature":
+                            for (int i = 3; i < split.length; i += 3) {
+                                if (i != 3) {
+                                    finalWrite.append("-");
+                                }
+                                switch (split[i]) {
+                                    case "name":
+                                        data = new HashMap<>(
+                                                Map.of("phoneNumber", split[i + 1], "newName", split[i + 2]));
+                                        clientAccount = new ClientAccount(data);
+                                        finalWrite.append(clientAccount.editName());
+                                        break;
+                                    case "phoneNumber":
+                                        data = new HashMap<>(
+                                                Map.of("phoneNumber", split[i + 1], "newPhoneNumber", split[i + 2]));
+                                        clientAccount = new ClientAccount(data);
+                                        finalWrite.append(clientAccount.editPhoneNumber());
+                                        break;
+                                    case "email":
+                                        data = new HashMap<>(
+                                                Map.of("phoneNumber", split[i + 1], "newEmail", split[i + 2]));
+                                        clientAccount = new ClientAccount(data);
+                                        finalWrite.append(clientAccount.editEmail());
+                                        break;
+                                }
+                            }
+                            writer(finalWrite.toString());
+                            break;
+                        case "password":
+                            data = new HashMap<>(
+                                    Map.of("phoneNumber", split[3],
+                                            "oldPassword", split[4], "newPassword", split[5], "confirmPassword", split[6]));
+                            clientAccount = new ClientAccount(data);
+                            writer(clientAccount.editPassword());
+                            break;
+                        case "wallet":
+                            break;
+                    }
+                    break;
+                case "Comments":
+                    switch (split[2]) {
+                        case "addComment":
+                            data = new HashMap<>(
+                                    Map.of("phoneNumber", split[3],
+                                            "question", split[4], "answer", split[5], "foodName", split[6],
+                                            "PhoneNumberRest", split[7], "date", split[8]));
+                            comments = new Comments(data);
+                            writer(comments.addComment());
+                            break;
+                        case "RestaurantComments":
+                            data = new HashMap<>(
+                                    Map.of("phoneNumber", split[3]));
+                            comments = new Comments(data);
+                            writer(comments.RestaurantComments());
+                            break;
+                        case "reply":
+                            String id = split[4] + "-" + split[5];
+                            data = new HashMap<>(
+                                    Map.of("phoneNumber", split[3], "id", id, "newAnswer", split[6]));
+                            comments = new Comments(data);
+                            writer(comments.reply());
+                            break;
+                    }
                     break;
             }
         } else if (split[0].equals("Other")) {

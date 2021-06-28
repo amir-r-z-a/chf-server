@@ -57,6 +57,170 @@ public class ClientOrders {
         } while (flag);
         return randomID;
     }
+
+    String ClientActiveOrdersData() {
+        String[] ordersData = DataBase.getSingleTone().getController("ClientActiveOrdersData").readFile().split("\n");
+        if (!ordersData[0].equals("")) {
+            StringBuilder ans = new StringBuilder();
+            int n = ordersData.length;
+            for (int i = 0; i < n; i++) {
+                if (ordersData[i].startsWith(data.get("phoneNumber"))) {
+                    ans.append(ordersData[i].split(":")[1]).append(", ").append(ordersData[i], ordersData[i].indexOf(",") + 2, ordersData[i].lastIndexOf(","));
+                    if (i != n - 1) {
+                        ans.append("\n");
+                    }
+                }
+            }
+            return ans.toString();
+        }
+        return "invalid";
+    }
+
+    String ClientActiveOrdersFoodNames() {
+        String[] ordersFoodNames = DataBase.getSingleTone().getController("ClientActiveOrdersFoodNames").readFile().split("\n");
+        if (!ordersFoodNames[0].equals("")) {
+            String[] elementsSplit =
+                    DataBase.getSingleTone().getController("RestaurantFoodDetails").readFile().split("\n");
+            String[] getData = ClientActiveOrdersData().split("\n");
+            StringBuilder ans = new StringBuilder();
+            int len = ordersFoodNames.length;
+            for (int counter = 0; counter < len; counter++) {
+                if (ordersFoodNames[counter].startsWith(data.get("phoneNumber"))) {
+                    String phoneNumber = "";
+                    String clientID = ordersFoodNames[counter].split(":")[1];
+                    for (String st : getData) {
+                        if (st.startsWith(data.get("phoneNumber") + ":" + clientID)) {
+                            phoneNumber = st.split(", ")[1];
+                        }
+                    }
+                    String[] strings = ordersFoodNames[counter].split(", ");
+                    int n = strings.length;
+                    for (int i = 1; i < n - 1; i++) {
+                        String elements = "invalidFood";
+                        for (String s : elementsSplit) {
+                            String[] test = s.split(":");
+                            if (s.startsWith(phoneNumber) && !test[1].equals("All") && test[2].equals(strings[i])) {
+                                elements = s;
+                                break;
+                            }
+                        }
+                        String[] splitElements = elements.split(", ")[0].split(":");
+                        StringBuilder strBuilder = new StringBuilder(splitElements[1] + ", " + splitElements[2] + ", ");
+                        strBuilder.append(elements, elements.indexOf(",") + 2, elements.lastIndexOf(","));
+                        if (i != n - 2) {
+                            strBuilder.append("+");
+                        }
+                        ans.append(strBuilder);
+                    }
+                    if (counter != len - 1) {
+                        ans.append("\n");
+                    }
+                }
+            }
+            return ans.toString();
+        }
+        return "invalid";
+    }
+
+    String ClientActiveOrdersNumbers() {
+        String[] numbers = DataBase.getSingleTone().getController("ClientActiveOrdersNumbers").readFile().split("\n");
+        if (!numbers[0].equals("")) {
+            StringBuilder ans = new StringBuilder();
+            int n = numbers.length;
+            for (int i = 0; i < n; i++) {
+                if (numbers[i].startsWith(data.get("phoneNumber"))) {
+                    ans.append(numbers[i], numbers[i].indexOf(",") + 2, numbers[i].lastIndexOf(","));
+                    if (i != n - 1) {
+                        ans.append("\n");
+                    }
+                }
+            }
+            return ans.toString();
+        }
+        return "invalid";
+    }
+
+    String ClientOrdersHistoryData() {
+        String[] ordersData = DataBase.getSingleTone().getController("ClientOrdersHistoryData").readFile().split("\n");
+        if (!ordersData[0].equals("")) {
+            StringBuilder ans = new StringBuilder();
+            int n = ordersData.length;
+            for (int i = 0; i < n; i++) {
+                if (ordersData[i].startsWith(data.get("phoneNumber"))) {
+                    ans.append(ordersData[i].split(":")[1]).append(", ").append(ordersData[i], ordersData[i].indexOf(",") + 2, ordersData[i].lastIndexOf(","));
+                    if (i != n - 1) {
+                        ans.append("\n");
+                    }
+                }
+            }
+            return ans.toString();
+        }
+        return "invalid";
+    }
+
+    String ClientOrdersHistoryFoodNames() {
+        String[] ordersFoodNames = DataBase.getSingleTone().getController("ClientOrdersHistoryFoodNames").readFile().split("\n");
+        if (!ordersFoodNames[0].equals("")) {
+            String[] elementsSplit =
+                    DataBase.getSingleTone().getController("RestaurantFoodDetails").readFile().split("\n");
+            String[] getData = ClientActiveOrdersData().split("\n");
+            StringBuilder ans = new StringBuilder();
+            int len = ordersFoodNames.length;
+            for (int counter = 0; counter < len; counter++) {
+                if (ordersFoodNames[counter].startsWith(data.get("phoneNumber"))) {
+                    String phoneNumber = "";
+                    String clientID = ordersFoodNames[counter].split(":")[1];
+                    for (String st : getData) {
+                        if (st.startsWith(data.get("phoneNumber") + ":" + clientID)) {
+                            phoneNumber = st.split(", ")[1];
+                        }
+                    }
+                    String[] strings = ordersFoodNames[counter].split(", ");
+                    int n = strings.length;
+                    for (int i = 1; i < n - 1; i++) {
+                        String elements = "invalidFood";
+                        for (String s : elementsSplit) {
+                            String[] test = s.split(":");
+                            if (s.startsWith(phoneNumber) && !test[1].equals("All") && test[2].equals(strings[i])) {
+                                elements = s;
+                                break;
+                            }
+                        }
+                        String[] splitElements = elements.split(", ")[0].split(":");
+                        StringBuilder strBuilder = new StringBuilder(splitElements[1] + ", " + splitElements[2] + ", ");
+                        strBuilder.append(elements, elements.indexOf(",") + 2, elements.lastIndexOf(","));
+                        if (i != n - 2) {
+                            strBuilder.append("+");
+                        }
+                        ans.append(strBuilder);
+                    }
+                    if (counter != len - 1) {
+                        ans.append("\n");
+                    }
+                }
+            }
+            return ans.toString();
+        }
+        return "invalid";
+    }
+
+    String ClientOrdersHistoryNumbers() {
+        String[] numbers = DataBase.getSingleTone().getController("ClientOrdersHistoryNumbers").readFile().split("\n");
+        if (!numbers[0].equals("")) {
+            StringBuilder ans = new StringBuilder();
+            int n = numbers.length;
+            for (int i = 0; i < n; i++) {
+                if (numbers[i].startsWith(data.get("phoneNumber"))) {
+                    ans.append(numbers[i], numbers[i].indexOf(",") + 2, numbers[i].lastIndexOf(","));
+                    if (i != n - 1) {
+                        ans.append("\n");
+                    }
+                }
+            }
+            return ans.toString();
+        }
+        return "invalid";
+    }
 }
 
 //bool flag;

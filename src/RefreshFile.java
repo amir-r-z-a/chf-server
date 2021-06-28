@@ -27,9 +27,9 @@ public class RefreshFile {
 
         File file17 = new File("D:\\Code\\DataBase\\Client\\ClientAccounts.txt");
         File file18 = new File("D:\\Code\\DataBase\\Client\\ClientFavRestaurants.txt");
-        File file19 = new File("D:\\Code\\DataBase\\Client\\ClientCommentsQuestion.txt");
-        File file20 = new File("D:\\Code\\DataBase\\Client\\ClientCommentsAnswer.txt");
-        File file21 = new File("D:\\Code\\DataBase\\Client\\ClientAddresses.txt");
+        File file20 = new File("D:\\Code\\DataBase\\Client\\ClientAddresses.txt");
+        File file19 = new File("D:\\Code\\DataBase\\Restaurant\\RestaurantComments.txt");
+        File file21 = new File("D:\\Code\\DataBase\\Client\\ClientComments.txt");
         try {
             FileWriter fileWriter = new FileWriter(file);
             FileWriter fileWriter1 = new FileWriter(file1);
